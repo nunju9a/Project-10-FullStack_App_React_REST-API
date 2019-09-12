@@ -18,7 +18,7 @@ class App extends React.Component {
       .catch(err => console.log("There was an error loading the page: " + err))
   }
   render() {
-    return this.state.isLoading ? (<h2>Loading...</h2>) : (
+    return this.state.isLoading ? (<h2>Please Hold...</h2>) : (
       <div className="container">
         {
           this.state.courses.map(course => {
