@@ -1,7 +1,9 @@
 import React from 'react';
 import './App.css';
-// import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom';
-// import config from './config'; 
+//  import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom';
+//  import { withRouter } from 'react-router';
+//  import Courses from './components/Courses';
+
 class App extends React.Component {
   state = {
     courses : [],
