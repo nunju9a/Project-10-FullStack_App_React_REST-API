@@ -15,78 +15,80 @@ class UpdateCourse extends React.Component {
   };
 
   componentDidMount() {
-    
+    //set component mount status
     this._isMounted = true;
-    // Fetch course info
-    fetch(`http://localhost:5000/api/courses${this.props.match.params.id}`)
+    //attempt to fetch course information
+    fetch(`http://localhost:5000/api/courses/${this.props.match.params.id}`)
       .then(response => {
         if(response.status === 404) {
-          this.props.history.push("/notfound"); // Render notfound if course isn't found
+          this.props.history.push("/notfound"); //resource is non-existent
         }
         return response.json();
       })
       .then(course => {
-        
+        //only set course state if component is mounted
         if(this._isMounted) {
           this.setState({
-        
+            //set course state
             id: course[0].id,
             title: course[0].title,
             description: course[0].description,
             estimatedTime: course[0].estimatedTime,
             materialsNeeded: course[0].materialsNeeded,
             user: course[0].user,
-            isLoading: false 
+            isLoading: false //no longer loading
           })
         }
       })
       .then(() => {
-        
+        //only redirect if component is mounted
         if(this._isMounted) {
           if(this.state.user.id !== this.props.context.authenticatedUser.id) {
-            this.props.history.push("/forbidden"); // If user id does not match, user is forbidden
+            this.props.history.push("/forbidden"); //user is unauthorized, isn't the owner of the course
+          }
         }
       })
       .catch(err => {
         console.log(err);
-        this.props.history.push("/error"); 
+        this.props.history.push("/error"); //there was an error, likely a server error
       })
   }
 
-  
+  //unmount the component, important for 404/not found error handling to prevent memory leaks
   componentWillUnmount() {
     this._isMounted = false;
   }
 
-  //Redirect to course
+  //redirects user to the course list
   returnToDetail = (e) => {
     e.preventDefault();
     this.props.history.push(`/courses/${this.props.match.params.id}`);
   }
 
-  
+  //update course title state
   updateCourseTitle = (e) => {
     this.setState({ title: e.target.value });
   }
 
-  
+  //update course description state
   updateCourseDescription = (e) => {
     this.setState({ description: e.target.value });
   }
 
-  
+  //update course estimated time state
   updateCourseEstimatedTime = (e) => {
     this.setState({ estimatedTime: e.target.value });
   }
 
-  
+  //update course materials needed state
   updateCourseMaterialsNeeded = (e) => {
     this.setState({ materialsNeeded: e.target.value });
   }
 
-  
+  //submit handler
   handleSubmit = async (e) => {
     e.preventDefault();
+    //obtain authenticated user state and credentials, and course state
     const { context } = this.props;
     const authUser = context.authenticatedUser;
     const {
@@ -96,7 +98,8 @@ class UpdateCourse extends React.Component {
       materialsNeeded
     } = this.state;
     const credentials = btoa(`${authUser.emailAddress}:${authUser.password}`);
-    //Attempt put request with all information 
+    //attempt to perform a PUT request with course information, setting the necessary headers and the
+    //request body to the course state
     const response = await fetch(`http://localhost:5000/api/courses/${this.state.id}`, {
       method: "PUT",
       headers: {
@@ -111,20 +114,20 @@ class UpdateCourse extends React.Component {
       }),
     });
     if(response.status === 204) {
-      this.props.history.push("/");
+      this.props.history.push("/"); //request was successful
     } else if(response.status === 400) {
       const data = await response.json();
-      this.setState({ errors: data.message.split(",") });
+      this.setState({ errors: data.message.split(",") }); //user made a bad request
     } else if(response.status === 500) {
-      this.props.history.push("/error"); 
+      this.props.history.push("/error"); //there was an error, likely a server error
     }
   }
 
-  // Render update course form
+  //render a course update form
   render() {
     let id = 1;
     return (
-      this.state.isLoading ? (<h2>Please hold while waiting for course info...</h2>) :
+      this.state.isLoading ? (<h2>Loading Course Information...</h2>) :
       <div className="bounds course--detail">
         <h1>Update Course</h1>
         <div>
@@ -201,4 +204,4 @@ class UpdateCourse extends React.Component {
   }
 }
 
-export default UpdateCourse;
+export default UpdateCourse

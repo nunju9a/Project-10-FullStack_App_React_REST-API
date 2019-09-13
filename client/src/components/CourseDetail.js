@@ -46,8 +46,8 @@ class CourseDetail extends React.Component {
   handleDelete = (e) => {
     e.preventDefault();
     // Get user state and credentials
-    const { context } = this.props;
-    const authUser = context.authenticatedUser;
+    //const { context } = this.props;
+    const authUser = this.props.authenticatedUser;
     const credentials = btoa(`${authUser.emailAddress}:${authUser.password}`);
     // Set Delete options
     const options = {
@@ -74,8 +74,8 @@ class CourseDetail extends React.Component {
 
   // Render info for each course
   render() {
-    const { context} = this.props;
-    const authUser = context.authenticatedUser;
+    //const { context} = this.props;
+    const authUser = this.props.authenticatedUser;
     return (
       this.state.isLoading ? (<h2>Please Hold For Course Info...</h2>) :
       <div>

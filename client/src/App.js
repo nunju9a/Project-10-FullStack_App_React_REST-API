@@ -1,69 +1,68 @@
 import React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
-//import statements for project components
+// import components
 import Header from './components/Header';
 import Courses from './components/Courses';
-import CreateCourse from './components/CreateCourse';
-//import UpdateCourse from './components/UpdateCourse';
 import CourseDetail from './components/CourseDetail';
-import UserSignUp from './components/UserSignUp';
 import UserSignIn from './components/UserSignIn';
+import UserSignUp from './components/UserSignUp';
+import CreateCourse from './components/CreateCourse';
+import UpdateCourse from './components/UpdateCourse';
 import UserSignOut from './components/UserSignOut';
+import NotFound from './components/NotFound';
+import Forbidden from './components/Forbidden';
+import UnhandledError from './components/UnhandledError';
+// import withContext func that wraps a component in context
+import withContext from './components/Context';
+// HOC functional component that wraps an instance of the <Route/> component
+// used for making some routes that require authentication private
+//import PrivateRoute from './PrivateRoute';
+
+// components with Context
+const HeaderContext = withContext(Header);
+const CoursesContext = withContext(Courses);
+const CourseDetailContext = withContext(CourseDetail);
+const UserSignUpContext = withContext(UserSignUp);
+const UserSignInContext = withContext(UserSignIn);
+const UserSignOutContext = withContext(UserSignOut);
+const CreateCourseContext = withContext(CreateCourse);
+const UpdateCourseContext = withContext(UpdateCourse);
+
 
 class App extends React.Component {
-  state = {
-    url: `http://localhost:5000/api`
-  }
 
-  // Render main component
   render() {
-    return (
-        <BrowserRouter>
-        <div id="root">
-          <div>
-            <Header/>
-            <hr />
-            <Switch>
-              {/*Homepage/Course List Route*/}
-              <Route
-                exact path="/"
-                render={ () => <Courses url={this.state.url} /> }
-              />
-              {/*Create Course Route*/}
-              <Route
-                path="/courses/create"
-                component={CreateCourse}
-                url={this.state.url}
-              />
-              {/*Course Update Route*/}
-              {/* <Route
-                path="/courses/:id/update"
-                component={UpdateCourse}
-              /> */}
-              {/*Course Details Route*/}
-              <Route
-                path="/courses/:id"
-                render={ props =>
-                  <CourseDetail
-                    {...props}
-                    url={this.state.url}
-                  />
-                }
-              />
-              {/*User Sign-Up Route*/}
-              <Route path="/signup" component={UserSignUp} />
-              {/*User Sign-In Route*/}
-              <Route path="/signin" component={UserSignIn} />
-              {/*User Sign-Out Route*/}
-              <Route path="/signout" component={UserSignOut} />
-             {/* <Route component={NotFound} /> */}
-            </Switch>
-          </div>
-        </div>
-        </BrowserRouter>
-    );
-  }
-}
 
-export default App;
+    return (
+      <BrowserRouter>
+        <div>
+             {/*Header always showing, location extracted and passed down as props*/}
+             <Route render={({location})=> <HeaderContext location={location.pathname} />} />
+          <Switch>
+              <Route exact path='/' component={ CoursesContext } />
+              {/* <Route path='/courses' component={CoursesContext}/> */}
+
+              {/*<Route  path='/courses/create' component={ CreateCourse } />*/}
+              <Route path='/courses/create' component={ CreateCourseContext }  />
+
+              {/*<Route path='/courses/:id/update' component={ UpdateCourse } />*/}
+              <Route path='/courses/:id/update' component={ UpdateCourseContext }/>
+
+              <Route path='/courses/:id' component={ CourseDetailContext} />
+              <Route path='/signin' component={ UserSignInContext } />
+              <Route path='/signup' component={ UserSignUpContext } />
+              <Route path='/signout' component={ UserSignOutContext } />
+
+              <Route path='/forbidden' component={ Forbidden } />
+              <Route path='/error' component={ UnhandledError } />
+              <Route component={ NotFound } />
+          </Switch>
+        </div>
+      </BrowserRouter>
+    );
+
+  } // end render
+} // end App
+
+export default App

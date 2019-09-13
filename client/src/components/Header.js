@@ -3,8 +3,8 @@ import { NavLink } from 'react-router-dom';
 
 const Header = (props) => {
   // Get state of authenticated user
-  const { context } = props;
-  const authUser = context.authenticatedUser;
+  //const { context } = props;
+  const authUser = props.authenticatedUser;
 
   //Render Header
   return (

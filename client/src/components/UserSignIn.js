@@ -28,14 +28,13 @@ class UserSignIn extends React.Component {
   handleSubmit = (e) => {
     e.preventDefault();
     //Getting state from previous path
-    const { context } = this.props;
     const { from } = this.props.location.state || { from: { pathname: "/" } };
     //Sign in user with current credentials
-    context.actions.signIn(this.state.emailAddress, this.state.password)
+    this.props.actions.signIn(this.state.emailAddress, this.state.password)
       .then(user => {
         if(user !== null) {
           user.password = this.state.password;
-          context.actions.setAuthenticatedUser(user); // User's state is authenticated throughout
+          this.props.actions.setAuthenticatedUser(user); // User's state is authenticated throughout
           this.props.history.push(from); //Redirect to previous route
         } else {
           this.props.history.push("/forbidden"); // Redirect to forbidden route

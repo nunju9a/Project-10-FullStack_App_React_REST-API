@@ -35,8 +35,7 @@ class CreateCourse extends React.Component {
  
   handleSubmit = async (e) => {
     e.preventDefault();
-    const { context } = this.props;
-    const authUser = context.authenticatedUser;
+    const authUser = this.props.authenticatedUser;
     const {
       title,
       description,
@@ -71,8 +70,7 @@ class CreateCourse extends React.Component {
   //Render Create Course form
   render() {
     let id = 1;
-    const { context } = this.props;
-    const authUser = context.authenticatedUser;
+    const authUser = this.props.authenticatedUser;
     return (
       <div className="bounds course--detail">
         <h1>Create Course</h1>
