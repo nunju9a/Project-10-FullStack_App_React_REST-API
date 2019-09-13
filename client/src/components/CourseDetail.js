@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { withRouter } from 'react-router';
-import ReactMarkdown from 'react-markdown';
+//import ReactMarkdown from 'react-markdown';
 
 class CourseDetail extends React.Component {
   _isMounted = false;
@@ -104,7 +103,7 @@ class CourseDetail extends React.Component {
               <p>By {this.state.course.user.firstName} {this.state.course.user.lastName}</p>
             </div>
             <div className="course--description">
-              <ReactMarkdown source={this.state.course.description} />
+              <p source={this.state.course.description} />
             </div>
           </div>
           <div className="grid-25 grid-right">
@@ -118,7 +117,7 @@ class CourseDetail extends React.Component {
                   <h4>Materials Needed</h4>
                   <ul>
                     {}
-                    <ReactMarkdown source={this.state.course.materialsNeeded} />
+                    <p source={this.state.course.materialsNeeded} />
                   </ul>
                 </li>
               </ul>
@@ -130,4 +129,4 @@ class CourseDetail extends React.Component {
   }
 }
 
-export default withRouter(CourseDetail);
+export default CourseDetail;

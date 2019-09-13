@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { withRouter } from 'react-router';
 
 class UserSignUp extends React.Component {
   state = {
@@ -155,4 +154,4 @@ class UserSignUp extends React.Component {
   }
 }
 
-export default withRouter(UserSignUp);
+export default UserSignUp;

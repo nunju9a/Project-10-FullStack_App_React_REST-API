@@ -1,6 +1,4 @@
 import React from 'react';
-import { withRouter } from 'react-router';
-import config from '../config';
 
 class CreateCourse extends React.Component {
   state = {
@@ -149,4 +147,4 @@ class CreateCourse extends React.Component {
   }
 }
 
-export default withRouter(CreateCourse);
+export default CreateCourse;

@@ -1,6 +1,5 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { withRouter } from 'react-router';
 
 const Header = (props) => {
   // Get state of authenticated user
@@ -37,4 +36,4 @@ const Header = (props) => {
   );
 }
 
-export default withRouter(Header);
+export default Header;

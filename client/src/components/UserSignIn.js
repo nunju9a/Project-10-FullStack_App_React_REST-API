@@ -1,5 +1,5 @@
 import React from 'react';
-import { withRouter } from 'react-router';
+
 import { Link } from 'react-router-dom';
 
 class UserSignIn extends React.Component {
@@ -78,4 +78,4 @@ class UserSignIn extends React.Component {
     );
   }
 }
-export default withRouter(UserSignIn);
+export default UserSignIn;

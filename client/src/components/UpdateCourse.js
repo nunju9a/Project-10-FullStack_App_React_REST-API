@@ -1,5 +1,4 @@
 import React from 'react';
-import { withRouter } from 'react-router';
 
 class UpdateCourse extends React.Component {
   _isMounted = false;
@@ -202,4 +201,4 @@ class UpdateCourse extends React.Component {
   }
 }
 
-export default withRouter(UpdateCourse);
+export default UpdateCourse;
