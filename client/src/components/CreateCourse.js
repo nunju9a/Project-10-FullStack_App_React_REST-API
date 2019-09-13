@@ -9,32 +9,37 @@ class CreateCourse extends React.Component {
     errors: [],
   };
 
-  
+  //redirects the user to the course list
   returnToList = (e) => {
     e.preventDefault();
     this.props.history.push("/");
   }
 
-  
+  //update course title state
   updateCourseTitle = (e) => {
     this.setState({ title: e.target.value });
   }
 
+  //update course description state
   updateCourseDescription = (e) => {
     this.setState({ description: e.target.value });
   }
 
+  //update course estimated time state
   updateCourseEstimatedTime = (e) => {
     this.setState({ estimatedTime: e.target.value });
   }
 
+  //update course materials needed state
   updateCourseMaterialsNeeded = (e) => {
     this.setState({ materialsNeeded: e.target.value });
   }
 
- 
+  //submit handler
   handleSubmit = async (e) => {
     e.preventDefault();
+    //const { context } = this.props;
+    //obtain authenticated user state and credentials and course state
     const authUser = this.props.authenticatedUser;
     const {
       title,
@@ -43,7 +48,7 @@ class CreateCourse extends React.Component {
       materialsNeeded
     } = this.state;
     const credentials = btoa(`${authUser.emailAddress}:${authUser.password}`);
-    // Attempting post request to create new course
+    //attempt to create a course via POST request with proper headers and course state info in the request body
     const response = await fetch(`http://localhost:5000/api/courses`, {
       method: "POST",
       headers: {
@@ -58,18 +63,19 @@ class CreateCourse extends React.Component {
       }),
     });
     if(response.status === 201) {
-      this.props.history.push("/");
+      this.props.history.push("/"); //successful request
     } else if(response.status === 400) {
       const data = await response.json();
-      this.setState({ errors: data.message.split(",") });
+      this.setState({ errors: data.message.split(",") }); //user made a bad request, likely omitted required fields
     } else if(response.status === 500) {
-      this.props.history.push("/error");
+      this.props.history.push("/error"); //there was an error, likely a server error
     }
   }
 
-  //Render Create Course form
+  //render course creation form
   render() {
     let id = 1;
+    //const { context } = this.props;
     const authUser = this.props.authenticatedUser;
     return (
       <div className="bounds course--detail">
@@ -100,8 +106,8 @@ class CreateCourse extends React.Component {
                     placeholder="Course title..." value={this.state.title}
                     onChange={this.updateCourseTitle}/>
                 </div>
-                {}
-                <p>By {authUser.firstName} {authUser.lastName}</p>
+                {/*Need to put authenticated user's name in the following <p> tag*/}
+                {/* <p>By {authUser.firstName} {authUser.lastName}</p> */}
               </div>
               <div className="course--description">
                 <div>
@@ -144,5 +150,6 @@ class CreateCourse extends React.Component {
     );
   }
 }
+
 
 export default CreateCourse;

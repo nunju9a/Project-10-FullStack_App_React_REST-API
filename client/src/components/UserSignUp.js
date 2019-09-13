@@ -60,20 +60,24 @@ class UserSignUp extends React.Component {
   handleSubmit = (e) => {
     e.preventDefault();
     // Storing state and previous location
-    const { context } = this.props;
+    //const { context } = this.props;
     const { firstName, lastName, emailAddress, password } = this.state;
     const { from } = this.props.location.state || { from: { pathname: "/" } };
+    console.log(firstName);
+    console.log(lastName);
+    console.log(emailAddress);
+    console.log(password);
     // Sign up to site with all credentials
-    context.actions.signUp({ firstName, lastName, emailAddress, password })
+    this.props.actions.signUp({ firstName, lastName, emailAddress, password })
       .then(errors => {
         if(errors.length) {
           this.setState({ errors }); 
         } else {
           
-          context.actions.signIn(emailAddress, password)
+          this.props.actions.signIn(emailAddress, password)
             .then(user => {
               user.password = password;
-              context.actions.setAuthenticatedUser(user); // User's state is authenticated throughout
+              this.props.actions.setAuthenticatedUser(user); // User's state is authenticated throughout
               this.props.history.push(from); // Redirect to previous path
             })
             .catch(err => {
