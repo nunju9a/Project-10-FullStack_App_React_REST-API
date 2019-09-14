@@ -1,26 +1,26 @@
 import React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import './styles/global.css'
 
-// import components
+// Importing components
 import Header from './components/Header';
 import Courses from './components/Courses';
 import CourseDetail from './components/CourseDetail';
 import UserSignIn from './components/UserSignIn';
 import UserSignUp from './components/UserSignUp';
+import UserSignOut from './components/UserSignOut';
 import CreateCourse from './components/CreateCourse';
 import UpdateCourse from './components/UpdateCourse';
-import UserSignOut from './components/UserSignOut';
 import NotFound from './components/NotFound';
 import Forbidden from './components/Forbidden';
 import UnhandledError from './components/UnhandledError';
-// import withContext func that wraps a component in context
-import withContext from './components/Context';
-// HOC functional component that wraps an instance of the <Route/> component
-// used for making some routes that require authentication private
-//import PrivateRoute from './PrivateRoute';
 
-// components with Context
+// Importing component for routes that are only accessible to authorized users
+import PrivateRoute from './PrivateRoute';
+
+// Importing functionality that wraps components in context
+import withContext from './components/Context';
+
+// Giving components context
 const HeaderContext = withContext(Header);
 const CoursesContext = withContext(Courses);
 const CourseDetailContext = withContext(CourseDetail);
@@ -30,7 +30,7 @@ const UserSignOutContext = withContext(UserSignOut);
 const CreateCourseContext = withContext(CreateCourse);
 const UpdateCourseContext = withContext(UpdateCourse);
 
-
+// App class holding all routes
 class App extends React.Component {
 
   render() {
@@ -38,32 +38,42 @@ class App extends React.Component {
     return (
       <BrowserRouter>
         <div>
-             {/*Header always showing, location extracted and passed down as props*/}
+             {/*Rendering Header which will stay throughout all routes*/}
              <Route render={({location})=> <HeaderContext location={location.pathname} />} />
           <Switch>
+              {/*Rendering main page which will display all courses*/}
               <Route exact path='/' component={ CoursesContext } />
-              {/* <Route path='/courses' component={CoursesContext}/> */}
 
-              {/*<Route  path='/courses/create' component={ CreateCourse } />*/}
-              <Route path='/courses/create' component={ CreateCourseContext }  />
+              {/*Rendering create course page - only accessible to authorized user*/}
+              <PrivateRoute path='/courses/create' component={ CreateCourseContext }  />
 
-              {/*<Route path='/courses/:id/update' component={ UpdateCourse } />*/}
-              <Route path='/courses/:id/update' component={ UpdateCourseContext }/>
+              {/*Rendering update course course page - only accessible to authorized user*/}
+              <PrivateRoute path='/courses/:id/update' component={ UpdateCourseContext }/>
 
-              <Route path='/courses/:id' component={ CourseDetailContext} />
+              {/*Rendering individual course page which will display course with all details*/}
+              <Route path='/courses/:id' component={ CourseDetailContext } />
+
+              {/*Rendering sign-In page*/}
               <Route path='/signin' component={ UserSignInContext } />
+
+              {/*Rendering sign-Up page*/}
               <Route path='/signup' component={ UserSignUpContext } />
+
+              {/*Rendering sign-Out component*/}
               <Route path='/signout' component={ UserSignOutContext } />
 
+              {/*Rendering forbidden page for unauthorized users*/}
               <Route path='/forbidden' component={ Forbidden } />
+
+              {/*Rendering error page for any unhandled errors/500 status*/}
               <Route path='/error' component={ UnhandledError } />
+              
+              {/*Rendering not found page*/}
               <Route component={ NotFound } />
           </Switch>
         </div>
       </BrowserRouter>
     );
-
-  } // end render
-} // end App
-
+  } 
+} 
 export default App

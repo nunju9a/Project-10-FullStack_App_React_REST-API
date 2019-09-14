@@ -1,80 +1,92 @@
-import React from 'react';
+// Component to render User Sign in form
 
+import React from 'react';
 import { Link } from 'react-router-dom';
 
 class UserSignIn extends React.Component {
+  // Initial state
   state = {
-    emailAddress: "",
-    password: "",
-  };
+    emailAddress: '',
+    password: '',
+    errors: [],
+  }
 
-  //Redirect to courses
-  returnToList = (e) => {
+  // Function to handle form input
+  change = (event) => {
+    const name = event.target.name;
+    const value = event.target.value;
+    this.setState(() => {
+      return {
+        [name]: value
+      };
+    });
+  }
+
+  // Function to get authenticated user
+  submit = (e) => {
     e.preventDefault();
-    this.props.history.push("/");
-  }
+    const { context } = this.props;
+    const { from } = this.props.location.state || {from: { pathname: '/' }};
+    const {
+      emailAddress,
+      password
+    } = this.state;
 
-  //Set state to updated email address
-  updateUserEmailAddress = (e) => {
-    this.setState({ emailAddress: e.target.value });
-  }
-
-  //Set state to updated password
-  updateUserPassword = (e) => {
-    this.setState({ password: e.target.value });
-  }
-
-  
-  handleSubmit = (e) => {
-    e.preventDefault();
-    //Getting state from previous path
-    const { from } = this.props.location.state || { from: { pathname: "/" } };
-    //Sign in user with current credentials
-    this.props.actions.signIn(this.state.emailAddress, this.state.password)
-      .then(user => {
-        if(user !== null) {
-          user.password = this.state.password;
-          this.props.actions.setAuthenticatedUser(user); // User's state is authenticated throughout
-          this.props.history.push(from); //Redirect to previous route
+    // If sign in is unsuccesful - return error message, otherwise direct user to page they were on
+    context.actions.signIn(emailAddress, password)
+      .then( user => {
+        if (user === null) {
+          this.setState(() => {
+            return { errors: [ 'Sign-in was unsuccessful' ] };
+          });
         } else {
-          this.props.history.push("/forbidden"); // Redirect to forbidden route
+          this.props.history.push(from);
         }
       })
-      .catch(err => {
+      .catch( err => {
         console.log(err);
-        this.props.history.push("/error"); 
-      });
+        this.props.history.push('/error');
+      })
+
   }
 
-  //Render sign in form
   render() {
-    return (
+    // Storing credentials state
+    const {
+      emailAddress,
+      password
+    } = this.state;
+
+    return(
       <div className="bounds">
         <div className="grid-33 centered signin">
           <h1>Sign In</h1>
+          {/* Ternary operator shows validation errors only if they exist */}
+          {
+            this.state.errors.length ?
+            <div>
+              <div className="validation-errors">
+                <ul>
+                  {this.state.errors.map((error, i) => <li key={i}>{error}</li>)}
+                </ul>
+              </div>
+            </div> : null
+          }
           <div>
-            <form onSubmit={this.handleSubmit}>
-              <div>
-                <input id="emailAddress" name="emailAddress" type="text" className=""
-                  placeholder="Email Address" value={this.state.emailAddress}
-                  onChange={this.updateUserEmailAddress} />
-              </div>
-              <div>
-                <input id="password" name="password" type="password" className=""
-                  placeholder="Password" value={this.state.password}
-                  onChange={this.updateUserPassword} />
-              </div>
+            <form onSubmit={this.submit}>
+              <div><input id="emailAddress" name="emailAddress" type="text" className="" placeholder="Email Address" onChange={this.change} value={emailAddress} /></div>
+              <div><input id="password" name="password" type="password" className="" placeholder="Password" onChange={this.change} value={password} /></div>
               <div className="grid-100 pad-bottom">
                 <button className="button" type="submit">Sign In</button>
-                <button className="button button-secondary" onClick={this.returnToList}>Cancel</button>
+                <Link className="button button-secondary" to="/">Return to List</Link>
               </div>
             </form>
           </div>
           <p>&nbsp;</p>
-          <p>Don't have a user account? <Link to="/signup">Click here</Link> to sign up!</p>
+          <p>Don't have a user account? <a href="/signup">Click here</a> to sign up!</p>
         </div>
       </div>
     );
   }
 }
-export default UserSignIn;
+export default UserSignIn

@@ -1,119 +1,100 @@
+//Component to create a new course
+
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 class CreateCourse extends React.Component {
+  // Initial state
   state = {
-    title: "",
-    description: "",
-    estimatedTime: "",
-    materialsNeeded: "",
+    title: '',
+    description: '',
+    estimatedTime: '',
+    materialsNeeded: '',
     errors: [],
-  };
-
-  //redirects the user to the course list
-  returnToList = (e) => {
-    e.preventDefault();
-    this.props.history.push("/");
   }
 
-  //update course title state
-  updateCourseTitle = (e) => {
-    this.setState({ title: e.target.value });
+  // Function to handle input
+  change = (event) => {
+    const name = event.target.name;
+    const value = event.target.value;
+
+    this.setState(() => {
+      return {
+        [name]: value
+      };
+    });
   }
 
-  //update course description state
-  updateCourseDescription = (e) => {
-    this.setState({ description: e.target.value });
-  }
-
-  //update course estimated time state
-  updateCourseEstimatedTime = (e) => {
-    this.setState({ estimatedTime: e.target.value });
-  }
-
-  //update course materials needed state
-  updateCourseMaterialsNeeded = (e) => {
-    this.setState({ materialsNeeded: e.target.value });
-  }
-
-  //submit handler
+  // Create handler
   handleSubmit = async (e) => {
     e.preventDefault();
-    //const { context } = this.props;
-    //obtain authenticated user state and credentials and course state
-    const authUser = this.props.authenticatedUser;
+    const { context } = this.props;
+    const authUser = context.authenticatedUser;
+    const authUserId = authUser.id;
+    const username = authUser.emailAddress;
+    const password = authUser.password;
+    const data = this.state;
+    data.userId = authUserId;
+
+    // POST request to Api
+    const res = await context.data.api("/courses", "POST", data, true, {username, password});
+    // If api returns status 201 redirect to main page  
+    if (res.status === 201) {
+        window.location.href = "/";
+        // If api returns status 400 - render error messages on what info is missing
+      }else if (res.status === 400) { 
+          return res.json().then(data => {
+          this.setState({errors: data.errors});
+        });
+        // If api returns 401 or 403 - render forbidden page
+      }else if (res.status === 401 || res.status === 403) {
+          window.location.href = '/forbidden';
+        // Otherwise render unhandled errror page
+      }else{
+        window.location.href = '/error';
+      }
+  }
+
+  render() {
+    // Storing form values to state
     const {
       title,
       description,
       estimatedTime,
       materialsNeeded
     } = this.state;
-    const credentials = btoa(`${authUser.emailAddress}:${authUser.password}`);
-    //attempt to create a course via POST request with proper headers and course state info in the request body
-    const response = await fetch(`http://localhost:5000/api/courses`, {
-      method: "POST",
-      headers: {
-        'Content-Type': 'application/json; charset=utf-8',
-        'Authorization': `Basic ${credentials}`,
-      },
-      body: JSON.stringify({
-        title,
-        description,
-        estimatedTime,
-        materialsNeeded
-      }),
-    });
-    if(response.status === 201) {
-      this.props.history.push("/"); //successful request
-    } else if(response.status === 400) {
-      const data = await response.json();
-      this.setState({ errors: data.message.split(",") }); //user made a bad request, likely omitted required fields
-    } else if(response.status === 500) {
-      this.props.history.push("/error"); //there was an error, likely a server error
-    }
-  }
+    
+    const { context } = this.props;
+    const authUser = context.authenticatedUser;
 
-  //render course creation form
-  render() {
-    let id = 1;
-    //const { context } = this.props;
-    const authUser = this.props.authenticatedUser;
-    return (
+    return(
       <div className="bounds course--detail">
         <h1>Create Course</h1>
         <div>
-          {
-            (this.state.errors.length > 0) &&
-            <div>
-              <h2 className="validation--errors--label">Validation errors</h2>
-              <div className="validation-errors">
-                <ul>
-                  {
-                    (this.state.errors.map(error => {
-                      return (<li key={id++}>{error}</li>);
-                    }))
-                  }
-                </ul>
-              </div>
+        {/* Ternary operator that will show validation errors only if there are errors*/}
+        {
+          this.state.errors.length ?
+          <div>
+            <h2 className="validation--errors--label">Validation errors</h2>
+            <div className="validation-errors">
+              <ul>
+                {this.state.errors.map((error, i) => <li key={i}>{error}</li>)}
+              </ul>
             </div>
-          }
+          </div> : null
+        }
           <form onSubmit={this.handleSubmit}>
             <div className="grid-66">
               <div className="course--header">
                 <h4 className="course--label">Course</h4>
                 <div>
-                  <input id="title" name="title" type="text"
-                    className="input-title course--title--input"
-                    placeholder="Course title..." value={this.state.title}
-                    onChange={this.updateCourseTitle}/>
+                  <input id="title" name="title" type="text" onChange={this.change} value={title} className="input-title course--title--input" placeholder="Course title..." />
                 </div>
-                {/*Need to put authenticated user's name in the following <p> tag*/}
-                {/* <p>By {authUser.firstName} {authUser.lastName}</p> */}
+                <p>By {authUser.firstName} {authUser.lastName}</p>
               </div>
               <div className="course--description">
                 <div>
-                  <textarea id="description" name="description" className=""
-                    placeholder="Course description..." value={this.state.description}
-                    onChange={this.updateCourseDescription}></textarea>
+                  <textarea id="description" name="description" onChange={this.change} value={description} className="" placeholder="Course description..."></textarea>
                 </div>
               </div>
             </div>
@@ -123,26 +104,20 @@ class CreateCourse extends React.Component {
                   <li className="course--stats--list--item">
                     <h4>Estimated Time</h4>
                     <div>
-                      <input id="estimatedTime" name="estimatedTime" type="text"
-                        className="course--time--input" placeholder="Hours"
-                        value={this.state.estimatedTime} onChange={this.updateCourseEstimatedTime} />
-                    </div>
+                      <input id="estimatedTime" name="estimatedTime" type="text" onChange={this.change} value={estimatedTime} className="course--time--input"
+                        placeholder="Hours" /><
+                    /div>
                   </li>
                   <li className="course--stats--list--item">
                     <h4>Materials Needed</h4>
-                    <div>
-                      <textarea id="materialsNeeded" name="materialsNeeded"
-                        className="" placeholder="List materials..."
-                        value={this.state.materialsNeeded}
-                        onChange={this.updateCourseMaterialsNeeded}></textarea>
-                    </div>
+                    <div><textarea id="materialsNeeded" name="materialsNeeded" onChange={this.change} value={materialsNeeded} className="" placeholder="List materials..."></textarea></div>
                   </li>
                 </ul>
               </div>
             </div>
             <div className="grid-100 pad-bottom">
               <button className="button" type="submit">Create Course</button>
-              <button className="button button-secondary" onClick={this.returnToList}>Cancel</button>
+              <Link className="button button-secondary" to="/">Return to List</Link>
             </div>
           </form>
         </div>
@@ -150,6 +125,4 @@ class CreateCourse extends React.Component {
     );
   }
 }
-
-
-export default CreateCourse;
+export default CreateCourse

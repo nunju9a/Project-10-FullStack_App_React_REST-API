@@ -1,11 +1,14 @@
-import React from 'react';
+// Component to render Forbidden page
 
-//render a simple error message for unauthorized users
+import React from 'react';
+import { Link } from 'react-router-dom';
+
 const Forbidden = () => {
-  return (
+  return(
     <div className="bounds">
       <h1>Forbidden</h1>
-      <p>You are not Authorized to view this page.</p>
+      <p>You are unauthorized to perform this action.</p>
+      <Link className="button button-secondary" to="/">Return to List</Link>
     </div>
   );
 }

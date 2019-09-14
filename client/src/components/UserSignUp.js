@@ -1,161 +1,155 @@
+// Component to render sign up form
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 
 class UserSignUp extends React.Component {
+
+  // Initial state
   state = {
-    firstName: "",
-    lastName: "",
-    emailAddress: "",
-    password: "",
-    confirmationPassword: "",
-    isConfirmed: false,
-    errors: [],
-  };
+    firstName: '',
+    lastName: '',
+    emailAddress: '',
+    password: '',
+    confirmPassword: '',
+    errors: {},
+    confirmSignInMsg: null,
 
-  //Redirects to courses
-  returnToList = (e) => {
+  }
+
+  // Function to handle form input
+  change = (event) => {
+    const name = event.target.name;
+    const value = event.target.value;
+
+    this.setState(() => {
+      return {
+        [name]: value
+      };
+    });
+  }
+
+  // Handles create new user and sets state of credentials
+  submit = (e) => {
     e.preventDefault();
-    this.props.history.push("/");
-  }
+    const { context } = this.props;
+    const { from } = this.props.location.state || {from: { pathname: '/' }};
 
-  
-  updateUserFirstName = (e) => {
-    this.setState({ firstName: e.target.value });
-  }
+    const {
+      firstName,
+      lastName,
+      emailAddress,
+      password,
+      confirmPassword
+    } = this.state;
 
-  
-  updateUserLastName = (e) => {
-    this.setState({ lastName: e.target.value });
-  }
+    let user = {};
 
-  
-  updateUserEmailAddress = (e) => {
-    this.setState({ emailAddress: e.target.value });
-  }
-
-  
-  updateUserPassword = async (e) => {
-    await this.setState({ password: e.target.value });
-    // Checking if password and confirm password match
-    if(this.state.confirmationPassword === this.state.password) {
-      this.setState({ isConfirmed: true });
-    } else {
-      this.setState({ isConfirmed: false });
-    }
-  }
-
-  
-  updateConfirmationPassword = async (e) => {
+    if(firstName === '' || lastName === '' || emailAddress === '' || password === '' || confirmPassword === '') {
+      this.setState({
+        errors: ["Missing information - Please recheck all fields"]
+      })
+      return;
     
-    await this.setState({ confirmationPassword: e.target.value });
-    // Checking if password and confirm password match
-    if(this.state.confirmationPassword === this.state.password) {
-      this.setState({ isConfirmed: true }); 
-    } else {
-      this.setState({ isConfirmed: false });
+   }
+
+    // Show error message if password and confirm password don't match
+    if(password !== confirmPassword) {
+       this.setState({
+         errors: ["Passwords do not match. Please re-confirm"]
+       })
+       return;
+     // Otherwise set properties for user
+    }else{
+       user = {
+        firstName,
+        lastName,
+        emailAddress,
+        password
+      };
     }
-  }
 
-
-  handleSubmit = (e) => {
-    e.preventDefault();
-    // Storing state and previous location
-    //const { context } = this.props;
-    const { firstName, lastName, emailAddress, password } = this.state;
-    const { from } = this.props.location.state || { from: { pathname: "/" } };
-    console.log(firstName);
-    console.log(lastName);
-    console.log(emailAddress);
-    console.log(password);
-    // Sign up to site with all credentials
-    this.props.actions.signUp({ firstName, lastName, emailAddress, password })
-      .then(errors => {
-        if(errors.length) {
-          this.setState({ errors }); 
+    context.data.createUser(user)
+      .then( errors => {
+        // Show errors if there are any
+        if (errors.length) {
+          this.setState({ errors: errors });
         } else {
-          
-          this.props.actions.signIn(emailAddress, password)
-            .then(user => {
-              user.password = password;
-              this.props.actions.setAuthenticatedUser(user); // User's state is authenticated throughout
-              this.props.history.push(from); // Redirect to previous path
-            })
-            .catch(err => {
+          this.setState({ errors: []});
+          // Created user is signed in and directed to whichever page they were on
+          context.actions.signIn(emailAddress, password)
+            .then( user => this.props.history.push(from))
+            .catch( err => {
+              // Otherwise render undhandled error page
               console.log(err);
-              this.props.history.push("/forbidden"); //the user is unauthorized
+              this.props.history.push('/error');
             })
         }
       })
-      .catch(err => {
+      .catch( err => {
         console.log(err);
-        this.props.history.push("/error"); // Redirect to forbidden route
+        this.setState({
+          errors: ["Error signing up"]
+        })
       });
   }
 
-  // Render sign up form
   render() {
-    let id = 1;
-    return (
+    // Storing values state
+    const {
+      firstName,
+      lastName,
+      emailAddress,
+      password,
+      confirmPassword,
+    } = this.state;
+
+    return(
       <div className="bounds">
         <div className="grid-33 centered signin">
           <h1>Sign Up</h1>
+          {/* Ternary operator shows errors only when they exist */}
           {
-            (this.state.errors.length > 0) &&
+            this.state.errors.length ?
             <div>
               <h2 className="validation--errors--label">Validation errors</h2>
               <div className="validation-errors">
                 <ul>
-                  {
-                    this.state.errors.map(error => {
-                      return (<li key={id++}>{error}</li>);
-                    })
-                  }
-                  {
-                    (!this.state.isConfirmed) && <li>Passwords must match for confirmation</li>
-                  }
+                  {this.state.errors.map((error, i) => <li key={i}>{error}</li>)}
                 </ul>
               </div>
-            </div>
+            </div> : null
+          }
+          {/* Ternary operator shows confirm sign-in message only if it exist */}
+          {
+            this.state.confirmSignInMsg ?
+            <div>
+              <div className="validation-errors">
+                <ul>
+                  <li>You are good to go! <a style={{fontWeight:"bold"}} href="/signin">Sign In</a>!</li>
+                </ul>
+              </div>
+            </div> : null
           }
           <div>
-            <form onSubmit={this.handleSubmit}>
-              <div>
-                <input id="firstName" name="firstName" type="text" className=""
-                  placeholder="First Name" value={this.state.firstName}
-                  onChange={this.updateUserFirstName} />
-              </div>
-              <div>
-                <input id="lastName" name="lastName" type="text" className=""
-                  placeholder="Last Name" value={this.state.lastName}
-                  onChange={this.updateUserLastName} />
-              </div>
-              <div>
-                <input id="emailAddress" name="emailAddress" type="text" className=""
-                  placeholder="Email Address" value={this.state.emailAddress}
-                  onChange={this.updateUserEmailAddress} />
-              </div>
-              <div>
-                <input id="password" name="password" type="password" className=""
-                  placeholder="Password" value={this.state.password}
-                  onChange={this.updateUserPassword} />
-              </div>
-              <div>
-                <input id="confirmPassword" name="confirmPassword" type="password"
-                  className="" placeholder="Confirm Password" value={this.state.confirmationPassword}
-                  onChange={this.updateConfirmationPassword} />
-              </div>
+            <form onSubmit={this.submit}>
+              <div><input id="firstName" name="firstName" type="text" className="" placeholder="First Name" onChange={this.change} value={firstName}/></div>
+              <div><input id="lastName" name="lastName" type="text" className="" placeholder="Last Name" onChange={this.change} value={lastName}/></div>
+              <div><input id="emailAddress" name="emailAddress" type="text" className="" placeholder="Email Address" onChange={this.change} value={emailAddress}/></div>
+              <div><input id="password" name="password" type="password" className="" placeholder="Password" onChange={this.change} value={password} /></div>
+              <div><input id="confirmPassword" name="confirmPassword" type="password" className="" placeholder="Confirm Password"
+                 onChange={this.change} value={confirmPassword}/></div>
               <div className="grid-100 pad-bottom">
                 <button className="button" type="submit">Sign Up</button>
-                <button className="button button-secondary" onClick={this.returnToList}>Cancel</button>
+                <Link className="button button-secondary" to="/">Return to List</Link>
               </div>
             </form>
           </div>
           <p>&nbsp;</p>
-          <p>Already have a user account? <Link to="/signin">Click here</Link> to sign in!</p>
+          <p>Already have a user account? <a href="/signin">Click here</a> to sign in!</p>
         </div>
       </div>
     );
   }
 }
-
-export default UserSignUp;
+export default UserSignUp

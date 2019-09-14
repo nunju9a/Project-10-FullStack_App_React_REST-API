@@ -1,39 +1,43 @@
+// Component to render Header
+
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 
 const Header = (props) => {
-  // Get state of authenticated user
-  //const { context } = props;
-  const authUser = props.authenticatedUser;
+  const { context } = props;
+  const authUser = context.authenticatedUser;
 
-  //Render Header
-  return (
+  return(
     <div className="header">
       <div className="bounds">
-        <h1 className="header--logo">Courses</h1>
-        <nav>
-          {
-            authUser ?
-            <React.Fragment>
-              <span>Welcome, {authUser.firstName}!</span>
-              <NavLink to="/signout">Sign Out</NavLink>
-            </React.Fragment>
-            :
-            <React.Fragment>
-              <NavLink to="/signup" className="signup">Sign Up</NavLink>
-              <NavLink to={
-                {
-                  pathname: "/signin",
-                  state: { from: props.location },
-                }
-              }
-              className="signin">Sign In</NavLink>
-            </React.Fragment>
-          }
-        </nav>
+        <h1 onClick={() => window.location.href = '/'} className="header--logo">Courses</h1>
+        {/* Ternary operator shows "Welcome user" and "sign out" IF authorized user signed in
+            Otherwise the "sign up" and "sign in" links will be shown*/
+          authUser ?
+          <nav>
+            <span>Welcome, {authUser.firstName}!</span>
+            <NavLink className="signout" to="/signout">Sign Out</NavLink>
+          </nav> :
+          <nav>
+            <NavLink
+              className="signup"
+              to={{
+                pathname:'/signup',
+                state: { from: props.location },
+              }}
+            >Sign Up</NavLink>
+
+            <NavLink
+              className="signin"
+              to={{
+                pathname:'/signin',
+                state: { from: props.location },
+              }}
+            >Sign In</NavLink>
+          </nav>
+        }
       </div>
     </div>
   );
 }
-
 export default Header;

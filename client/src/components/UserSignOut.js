@@ -1,12 +1,12 @@
+//Component to sign out user
 import React from 'react';
 import { Redirect } from 'react-router-dom';
 
-// Sign user out and redirect to courses
 const UserSignOut = ({ context }) => {
-  context.actions.signOut();
-  return (
+    alert('Thanks for visiting - Hope to see you soon!');
+    context.actions.signOut();
+    return (
     <Redirect to="/" />
   );
 }
-
 export default UserSignOut;

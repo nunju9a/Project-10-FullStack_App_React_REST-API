@@ -1,35 +1,28 @@
+// Setting up private route which only allows currently authenticated user to access
+// Taken mostly from Treehouse React Authentication course
+
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import { Consumer } from './components/Context';
 
-//provide a higher-order component to ensure that users are authenticated before
-//permitting access to protected routes
-const PrivateRoute = (props) => {
-  const {
-    component: Component,
-    ...rest
-  } = props;
+export default ({ component: Component, ...rest }) => {
   return (
     <Consumer>
-      {
-        context => (
-          <Route
-            {...rest}
-            render={props =>
-              context.authenticatedUser ?
-                (<Component {...props} />)
-                :
-                (<Redirect
-                  to={{
-                    pathname: '/signin',
-                    state: { from: props.location },
-                  }}
-                />)
-            }
-          />
+      { context => (
+        <Route
+          {...rest}
+          render={
+            props => context.authenticatedUser ? (
+              <Component {...props} />
+            ) : (
+              <Redirect to={{
+                pathname: '/signin',
+                state: { from: props.location },// Redirect to current location
+              }} />
+            )
+          }
+        />
       )}
     </Consumer>
   );
-}
-
-export default PrivateRoute;
+};

@@ -1,132 +1,128 @@
+// Component holding each individual course details and handles delete
+
 import React from 'react';
 import { Link } from 'react-router-dom';
-//import ReactMarkdown from 'react-markdown';
+import ReactMarkdown from "react-markdown";
+
 
 class CourseDetail extends React.Component {
-  _isMounted = false;
 
+  // Initial state
   state = {
-    course: "",
-    isLoading: true,
+    course: [],
+    isUserAuth: null,
   };
 
-  componentDidMount() {
-    
-    this._isMounted = true;
-    //attempt to fetch course information
-    fetch(`http://localhost:5000/api/courses/${this.props.match.params.id}`)
-      .then(response => {
-        if(response.status === 404) {
-          this.props.history.push("/notfound");
+  // Fetch current course details
+  async componentDidMount() {
+    const res = await this.props.context.data.api(`/courses/${this.props.match.params.id}`, "GET");
+    if (res.status === 200) {
+      // Return course details if api responds with status 200
+      return res.json().then(course => {
+        const { context } = this.props;
+        const authUser = context.authenticatedUser;
+        let user = null;
+        // Testing if user is authenticaed and course owner
+        if(authUser && authUser.id === course[0].userId) {
+          user = true;
         }
-        return response.json();
-      })
-      .then(course => {
-
-        // Set course state if component mounted
-        if(this._isMounted) { 
-          this.setState({
-            course: course[0],
-            isLoading: false 
-          })
-        }
-      })
-      .catch(err => {
-        console.log(err);
-        this.props.history.push("/error"); 
-      })
-  }
-
-  //Unmount component to prevent memory leaks
-  componentWillUnmount() {
-    this._isMounted = false;
-  }
-
-  // Handle Deleting
-  handleDelete = (e) => {
-    e.preventDefault();
-    // Get user state and credentials
-    //const { context } = this.props;
-    const authUser = this.props.authenticatedUser;
-    const credentials = btoa(`${authUser.emailAddress}:${authUser.password}`);
-    // Set Delete options
-    const options = {
-      method: "DELETE",
-      headers: {
-        'Content-Type': 'application/json; charset=utf-8',
-        'Authorization': `Basic ${credentials}`,
-      },
-    };
-    // Authenticate User before deleting
-    fetch(`http://localhost:5000/api/courses/${this.state.course.id}`, options)
-      .then(response => {
-        if(response.status === 401) {
-          this.props.history.push("/forbidden"); // Forbidden - Not Authorized
-        } else {
-          this.props.history.push("/");
-        }
-      })
-      .catch(err => {
-        console.log(err);
-        this.props.history.push("/error"); 
+        
+        this.setState({course: course, isUserAuth: user});
       });
+    }else if (res.status === 404) { // Render not found page if status 404
+      window.location.href = '/notfound';
+    }else if (res.status === 500) { // Render unhandled error page if status 500
+      window.location.href = '/error';
+    }else {
+      throw new Error();
+    }
   }
 
-  // Render info for each course
+  // Delete Handler
+  handleDelete = async (e) => {
+      const { context } = this.props;
+      const authUser = context.authenticatedUser;
+      const username = authUser.emailAddress;
+      const password = authUser.password;
+
+      // Confirmation alert
+      if(window.confirm('Are you sure you want to delete this course ?')) {
+        // DELETE request to the API
+        const res = await context.data.api(`/courses/${this.props.match.params.id}`, "DELETE", null, true, { username, password });
+        if (res.status === 204) {
+          window.location.href = '/'; // Redirect to main page if status 204 returned
+          return [];
+        } else if (res.status === 401 || res.status === 403) { // Render forbidden page if status 401 or 403
+          window.location.href = '/forbidden';
+        } else {
+          window.location.href = '/error'; // Render unhandled error page if any other status
+        }
+      }
+
+  } 
+
   render() {
-    //const { context} = this.props;
-    const authUser = this.props.authenticatedUser;
-    return (
-      this.state.isLoading ? (<h2>Please Hold For Course Info...</h2>) :
+    
+    const course = this.state.course[0];
+    const user = this.state.isUserAuth;
+
+    return(
       <div>
-        <div className="actions--bar">
-          <div className="bounds">
-            <div className="grid-100">
-              {
-                (authUser && authUser.id === this.state.course.user.id) &&
-                <span>
-                  <Link to={`/courses/${this.state.course.id}/update`}
-                    className="button">Update Course</Link>
-                  <Link to="/" className="button"
-                    onClick={this.handleDelete}>Delete Course</Link>
-                </span>
-              }
-              <Link to="/" className="button button-secondary">Return to List</Link>
+      { /* Ternary operator to render either the content or loading message */
+        this.state.course.length ?
+        <div>
+          <div className="actions--bar">
+            <div className="bounds">
+
+              <div className="grid-100">
+                  { /* Ternary operator to render either Update and Delete button if user the course owner*/
+                    user ?
+                    <span>
+                    <Link className="button" to={`/courses/${this.props.match.params.id}/update`}>Update Course</Link>
+                    <Link onClick={this.handleDelete} to='#' className="button">Delete Course</Link>
+                    </span>
+                    : null
+                  }
+                <Link className="button button-secondary" to="/">Return to List</Link>
+              </div>
+            </div>
+          </div>
+
+          <div className="bounds course--detail">
+            <div className="grid-66">
+              <div className="course--header">
+                <h4 className="course--label">Course</h4>
+                <h3 className="course--title">{course.title}</h3>
+                <p>By {course.user.firstName} {course.user.lastName}</p>
+              </div>
+              <div className="course--description">
+               <ReactMarkdown source={course.description} />
+              </div>
+            </div>
+            <div className="grid-25 grid-right">
+              <div className="course--stats">
+                <ul className="course--stats--list">
+                  <li className="course--stats--list--item">
+                    <h4>Estimated Time</h4>
+                    <h3>{course.estimatedTime}</h3>
+                  </li>
+                  <li className="course--stats--list--item">
+                    <h4>Materials Needed</h4>
+                    <ul>
+                    <ReactMarkdown source={course.materialsNeeded} />
+                    </ul>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
-        <div className="bounds course--detail">
-          <div className="grid-66">
-            <div className="course--header">
-              <h4 className="course--label">Course</h4>
-              <h3 className="course--title">{this.state.course.title}</h3>
-              <p>By {this.state.course.user.firstName} {this.state.course.user.lastName}</p>
-            </div>
-            <div className="course--description">
-              <p source={this.state.course.description} />
-            </div>
-          </div>
-          <div className="grid-25 grid-right">
-            <div className="course--stats">
-              <ul className="course--stats--list">
-                <li className="course--stats--list--item">
-                  <h4>Estimated Time</h4>
-                  <h3>{this.state.course.estimatedTime}</h3>
-                </li>
-                <li className="course--stats--list--item">
-                  <h4>Materials Needed</h4>
-                  <ul>
-                    {}
-                    <p source={this.state.course.materialsNeeded} />
-                  </ul>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
+        :
+        <h3>Please Hold...</h3>
+      }
       </div>
     );
-  }
+  } 
 }
 
-export default CourseDetail;
+export default CourseDetail

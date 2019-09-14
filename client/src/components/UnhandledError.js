@@ -1,13 +1,15 @@
-import React from 'react';
+//Component to render error page for unhandled errors
 
-//render a simple error message for unhandled errors and server errors
+import React from 'react';
+import { Link } from 'react-router-dom';
+
 const UnhandledError = () => {
-  return (
+  return(
     <div className="bounds">
       <h1>Error</h1>
-      <p>Sorry! An unexpected error just occurred.</p>
+      <p>Sorry! An unexpected error has occurred.</p>
+      <Link className="button button-secondary" to="/">Return to List</Link>
     </div>
   );
 }
-
 export default UnhandledError;
