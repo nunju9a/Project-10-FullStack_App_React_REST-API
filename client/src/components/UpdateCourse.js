@@ -146,7 +146,7 @@ class UpdateCourse extends React.Component {
             </div>
             <div className="grid-100 pad-bottom">
               <button className="button" type="submit">Update Course</button>
-              <Link className="button button-secondary" to="`/courses/${this.props.match.params.id}`">Cancel</Link>
+              <Link className="button button-secondary" to={`/courses/${this.props.match.params.id}`}>Cancel</Link>
             </div>
           </form>
         </div>

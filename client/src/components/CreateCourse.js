@@ -108,8 +108,8 @@ class CreateCourse extends React.Component {
                     <h4>Estimated Time</h4>
                     <div>
                       <input id="estimatedTime" name="estimatedTime" type="text" onChange={this.change} value={estimatedTime} className="course--time--input"
-                        placeholder="Hours" /><
-                    /div>
+                        placeholder="Hours" />
+                        </div>
                   </li>
                   <li className="course--stats--list--item">
                     <h4>Materials Needed</h4>

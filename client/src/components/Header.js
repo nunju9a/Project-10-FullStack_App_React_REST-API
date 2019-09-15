@@ -15,7 +15,7 @@ const Header = (props) => {
             Otherwise the "sign up" and "sign in" links will be shown*/
           authUser ?
           <nav>
-            <span>Welcome, {authUser.firstName}!</span>
+            <span>Welcome, {authUser.firstName} {authUser.lastName}!</span>
             <NavLink className="signout" to="/signout">Sign Out</NavLink>
           </nav> :
           <nav>
