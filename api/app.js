@@ -14,15 +14,14 @@ const app = express();
 // Define sequelize
 const sequelize = require("./models").sequelize;
 
-// Setup morgan which gives us http request logging
-app.use(morgan('dev'));
-
 // Enables cors requests
 app.use(cors());
 
+// Setup morgan which gives us http request logging
+app.use(morgan('dev'));
+
 // Setup json parsing and access to req.body
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
 // Setup api routes
 const homeRoute = require('./routes/home');
