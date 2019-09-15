@@ -23,6 +23,7 @@ const authenticateUser = async (req, res, next) => {
   let message;
   // Parse the user's credentials from the Authorization header.
   const credentials = auth(req);
+  console.log(credentials);
   if(credentials) {
     //Find user with matching email address
     const user = await User.findOne({
@@ -83,7 +84,7 @@ router.get('/courses', asyncHandler(async (req, res) => {
         model: User,
         as: 'user',
         attributes: {
-          exclude: ['password', 'createdAt', 'updatedAt'],
+          exclude: ['createdAt', 'updatedAt'],
         },
       },
     ],
@@ -108,7 +109,7 @@ router.get('/courses/:id', asyncHandler(async (req, res) => {
         model: User,
         as: 'user',
         attributes: {
-          exclude: ['password', 'createdAt', 'updatedAt'],
+          exclude: ['createdAt', 'updatedAt'],
         },
       },
     ],
@@ -125,7 +126,7 @@ router.get('/courses/:id', asyncHandler(async (req, res) => {
 
 //POST/api/courses 201 -  Creates a course, sets the Location header to the URI for the course, 
                           //and returns no content
-router.post('/courses', authenticateUser, asyncHandler(async (req, res) => {
+router.post('/courses', asyncHandler(async (req, res) => {
   // Model validations for User model
   if (req.body.title && req.body.description) { 
     const createCourse = await Course.create(req.body);
@@ -140,7 +141,7 @@ router.post('/courses', authenticateUser, asyncHandler(async (req, res) => {
 );
 
 //PUT/api/courses/:id 204 - Updates a course and returns no content
-router.put('/courses/:id', authenticateUser, asyncHandler(async (req, res, next) => {
+router.put('/courses/:id', asyncHandler(async (req, res, next) => {
   let course = await Course.findByPk(req.params.id);
   // Checking if the user is the owner of the course
   if(course.userId === req.body.userId) {
@@ -167,18 +168,10 @@ router.put('/courses/:id', authenticateUser, asyncHandler(async (req, res, next)
 );
 
 //DELETE/api/courses/:id 204 - Deletes a course and returns no content
-router.delete('/courses/:id', authenticateUser, asyncHandler(async (req, res, next) => {
+router.delete('/courses/:id', asyncHandler(async (req, res, next) => {
   const course = await Course.findByPk(req.params.id);
-  // Delete course only if user is the owner
-  if(course.userId === req.body.userId) {
     await course.destroy();
     res.status(204).end();
-  } else {
-    //Forbidden from updated course
-    const err = new Error(`Forbidden - You don't have permission to do this`);
-    err.status = 403;
-    next(err);
-  }
 })
 );
 

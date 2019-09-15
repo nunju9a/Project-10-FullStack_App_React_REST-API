@@ -35,7 +35,7 @@ const authenticateUser = async (req, res, next) => {
     const user = await User.findOne({
         raw: true,
         where: {
-          emailAddress: credentials.name,
+          emailAddress: `${credentials.name}`,
         },
     });
     //If user matches email
@@ -85,7 +85,7 @@ router.get('/users', authenticateUser, asyncHandler(async (req, res) => {
       {
         // Exclude private or unecessary info
         attributes: {
-          exclude: ['password', 'createdAt', 'updatedAt'],
+          exclude: ['createdAt', 'updatedAt'],
         },
       }
     );
