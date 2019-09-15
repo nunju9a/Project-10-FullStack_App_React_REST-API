@@ -88,7 +88,7 @@ router.get('/courses', asyncHandler(async (req, res) => {
       },
     ],
   });
-  res.json(allCourses);
+  res.status(200).json(allCourses);
 })
 );
 
@@ -113,7 +113,13 @@ router.get('/courses/:id', asyncHandler(async (req, res) => {
       },
     ],
   });
-  res.json(course);
+  if(course.length !== 0){
+    res.status(200).json(course);
+  } else{
+      res.status(404).json({
+      message: "Course Not Found"
+    })
+  }
 })
 );
 
