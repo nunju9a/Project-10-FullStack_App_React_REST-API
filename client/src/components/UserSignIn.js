@@ -37,7 +37,7 @@ class UserSignIn extends React.Component {
       .then( user => {
         if (user === null) {
           this.setState(() => {
-            return { errors: [ 'Sign-in was unsuccessful' ] };
+            return { errors: [ 'Sign-in was unsuccessful - Please check all fields' ] };
           });
         } else {
           this.props.history.push(from);
@@ -78,7 +78,7 @@ class UserSignIn extends React.Component {
               <div><input id="password" name="password" type="password" className="" placeholder="Password" onChange={this.change} value={password} /></div>
               <div className="grid-100 pad-bottom">
                 <button className="button" type="submit">Sign In</button>
-                <Link className="button button-secondary" to="/">Return to List</Link>
+                <Link className="button button-secondary" to="/">Cancel</Link>
               </div>
             </form>
           </div>

@@ -31,21 +31,24 @@ class CreateCourse extends React.Component {
     const { context } = this.props;
     const authUser = context.authenticatedUser;
     const authUserId = authUser.id;
-    const username = authUser.emailAddress;
+    const emailAddress = authUser.emailAddress;
     const password = authUser.password;
     const data = this.state;
     data.userId = authUserId;
 
     // POST request to Api
-    const res = await context.data.api("/courses", "POST", data, true, {username, password});
+    const res = await context.data.api("/courses", "POST", data, true, {emailAddress, password});
+    console.log(emailAddress);
+    console.log(password);
     // If api returns status 201 redirect to main page  
-    if (res.status === 201) {
+    if (res.status === 201 || res.status === 200) {
         window.location.href = "/";
         // If api returns status 400 - render error messages on what info is missing
       }else if (res.status === 400) { 
-          return res.json().then(data => {
-          this.setState({errors: data.errors});
-        });
+        this.setState({
+          errors: ["Missing information - Please check all fields are entered correctly"]
+        })
+        return;
         // If api returns 401 or 403 - render forbidden page
       }else if (res.status === 401 || res.status === 403) {
           window.location.href = '/forbidden';
@@ -117,7 +120,7 @@ class CreateCourse extends React.Component {
             </div>
             <div className="grid-100 pad-bottom">
               <button className="button" type="submit">Create Course</button>
-              <Link className="button button-secondary" to="/">Return to List</Link>
+              <Link className="button button-secondary" to="/">Cancel</Link>
             </div>
           </form>
         </div>

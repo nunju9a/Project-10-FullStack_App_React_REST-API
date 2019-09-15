@@ -70,22 +70,23 @@ class UpdateCourse extends React.Component {
     const { context } = this.props;
     const authUser = context.authenticatedUser;
     const authUserId = authUser.id;
-    const username = authUser.emailAddress;
+    const emailAddress = authUser.emailAddress;
     const password = authUser.password;
     const data = this.state;
     data.userId = authUserId;
 
     // PUT request to api
-    const res = await context.data.api(`/courses/${this.props.match.params.id}`, 'PUT', data, true, { username, password } );
+    const res = await context.data.api(`/courses/${this.props.match.params.id}`, 'PUT', data, true, { emailAddress, password } );
     // Render course page with updated info if api responds with status 204
     if (res.status === 204) { 
       this.setState({errors: []});
       window.location.href = `/courses/${this.props.match.params.id}`;
     
     }else if (res.status === 400) { // Show missing error messages if api returns status 400
-      return res.json().then(data => {
-        this.setState({errors: data.errors});
-      });
+      this.setState({
+        errors: ["Missing information - Please check all fields are entered correctly"]
+      })
+      return;
       //Render forbidden page if api returns status 401 or 403
     } else if (res.status === 401 || res.status === 403) {
         window.location.href = '/forbidden';
@@ -145,7 +146,7 @@ class UpdateCourse extends React.Component {
             </div>
             <div className="grid-100 pad-bottom">
               <button className="button" type="submit">Update Course</button>
-              <Link className="button button-secondary" to="/">Return to List</Link>
+              <Link className="button button-secondary" to="`/courses/${this.props.match.params.id}`">Cancel</Link>
             </div>
           </form>
         </div>

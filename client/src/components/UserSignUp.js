@@ -47,12 +47,18 @@ class UserSignUp extends React.Component {
 
     if(firstName === '' || lastName === '' || emailAddress === '' || password === '' || confirmPassword === '') {
       this.setState({
-        errors: ["Missing information - Please recheck all fields"]
+        errors: ["Missing information - Please check all fields are entered correctly"]
       })
       return;
     
    }
-
+   const valid = /^[^@]+@[^@.]+\.[a-z]+$/i.test(emailAddress);  // Testing for valid email, with all characters such as '@' and '.' in the right order
+    if (!valid) {
+      this.setState({
+        errors: ["Please enter a valid e-mail address"]
+      })
+      return;
+    }
     // Show error message if password and confirm password don't match
     if(password !== confirmPassword) {
        this.setState({
@@ -89,7 +95,7 @@ class UserSignUp extends React.Component {
       .catch( err => {
         console.log(err);
         this.setState({
-          errors: ["Error signing up"]
+          errors: ["Email address is already associated with another user. Please try another"]
         })
       });
   }
@@ -112,7 +118,7 @@ class UserSignUp extends React.Component {
           {
             this.state.errors.length ?
             <div>
-              <h2 className="validation--errors--label">Validation errors</h2>
+              <h2 className="validation--errors--label">Error creating account:</h2>
               <div className="validation-errors">
                 <ul>
                   {this.state.errors.map((error, i) => <li key={i}>{error}</li>)}
@@ -141,7 +147,7 @@ class UserSignUp extends React.Component {
                  onChange={this.change} value={confirmPassword}/></div>
               <div className="grid-100 pad-bottom">
                 <button className="button" type="submit">Sign Up</button>
-                <Link className="button button-secondary" to="/">Return to List</Link>
+                <Link className="button button-secondary" to="/">Cancel</Link>
               </div>
             </form>
           </div>

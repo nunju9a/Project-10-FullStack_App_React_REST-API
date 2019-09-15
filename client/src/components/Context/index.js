@@ -3,6 +3,7 @@
 import React from 'react';
 import Data from '../../Data';
 import Cookies from 'js-cookie';
+import Cryptr from 'cryptr';
 
 // Creating Context which will allow Provider and Consumer objects to be exported
 const AppContext = React.createContext();
@@ -17,20 +18,21 @@ export class Provider extends React.Component {
    super();
    // Creating new instance of Data class
    this.data = new Data();
+   this.cryptr = new Cryptr('Hashedpass');
  }
 
 
   // Sign-in function which authenticates user and sets state
-  signIn = async (username, password) => {
-    const user = await this.data.getUser(username, password);
+  signIn = async (emailAddress, password) => {
+    const user = await this.data.getUser(emailAddress, password);
+    // Store the hashed password
+    const hashedPassword = this.cryptr.encrypt(password);
     if (user !== null) {
-      this.setState(() => {
-        return {
-          authenticatedUser: user,
-        };
-      });
+     this.setState({authenticatedUser: user});
+     this.state.authenticatedUser.emailAddress = emailAddress;
+     this.state.authenticatedUser.password = hashedPassword;
       
-    Cookies.set('authenticatedUser', JSON.stringify(user[0]), { expires: 1 });
+    Cookies.set('authenticatedUser', JSON.stringify(user), { expires: 1 });
 
     }
     return user;
@@ -54,6 +56,7 @@ export class Provider extends React.Component {
   const value = {
     authenticatedUser,
     data: this.data,
+    cryptr: this.cryptr,
     actions: {
       signIn: this.signIn,
       signOut: this.signOut
