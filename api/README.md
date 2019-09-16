@@ -1,3 +1,7 @@
+Api folder contains previous project with minor adjustments
+
+To run server:  Navigate to api folder in terminal ('cd api'). Run npm install and npm start.  Optionally run npm run seed to set database back to original state. Currently the database is set up with a Saved By The Bell theme.
+
 # Project-9
 
 # Full Stack JavaScript Techdegree v2 - REST API Project
