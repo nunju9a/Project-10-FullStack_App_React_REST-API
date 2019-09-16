@@ -203,11 +203,13 @@ svg {
 body {
   font-family: "Work Sans", sans-serif;
   background: #fff;
+  background-image: url(./sbtb.png);
+  background-size: cover;
 }
 
 /* line 13, ../sass/global.sass */
 .header {
-  background: #57496e;
+  background: 	#890022;
   padding: 20px 0;
   margin-bottom: 30px;
 }
@@ -245,7 +247,7 @@ body {
 }
 /* line 37, ../sass/global.sass */
 .header nav a {
-  color: rgba(255, 255, 255, 0.5);
+  color: #bbbbbb;
   margin-left: 20px;
 }
 /* line 40, ../sass/global.sass */
@@ -256,9 +258,10 @@ body {
 /* line 44, ../sass/global.sass */
 .actions--bar {
   border-bottom: 1px solid #d5f9fe;
-  background: #f8feff;
+  background:	#890022;
   padding: 20px 0;
   margin-top: -30px;
+ 
 }
 /* line 2, ../sass/mixins.sass */
 .actions--bar:before, .actions--bar:after {
@@ -278,11 +281,12 @@ body {
 h1 {
   font-size: 36px;
   margin-bottom: 20px;
+  background: #890022;
 }
 
 /* line 61, ../sass/global.sass */
 a {
-  color: #7c689b;
+  color: #bbbbbb;;
   cursor: pointer;
   text-decoration: none;
   -webkit-transition: color 0.2s;
@@ -296,6 +300,12 @@ a {
 p {
   font-family: "Cousine";
   margin-bottom: 30px;
+  color: white;
+}
+
+p:nth-child(even) {
+  background: #890022;
+  color: white;
 }
 
 /* line 70, ../sass/global.sass */
@@ -339,7 +349,7 @@ p {
 
 /* line 102, ../sass/global.sass */
 .course--module {
-  background: #7c689b;
+  background: #890022;
   border-radius: 8px;
   padding: 30px;
   margin-bottom: 30px;
@@ -428,19 +438,22 @@ p {
 /* line 164, ../sass/global.sass */
 .course--header .course--label {
   font-size: 18px;
-  color: #999;
+  color: gray;
+  background: #890022;
 }
 /* line 167, ../sass/global.sass */
 .course--header .course--title {
   font-size: 48px;
   margin-bottom: 15px;
-  color: #332a40;
+  color: black;
+  background: #890022;
 }
 /* line 171, ../sass/global.sass */
 .course--header p {
   font-size: 18px;
-  color: #b1a5c4;
+  color: black;
   font-weight: 100;
+  background: gray;
 }
 /* line 176, ../sass/global.sass */
 .course--title--input {
@@ -460,7 +473,8 @@ p {
 .course--description p {
   font-size: 16px;
   line-height: 1.8;
-  color: #444;
+  color: black;
+  background: gray;
 }
 /* line 195, ../sass/global.sass */
 .course--description ol,
@@ -476,6 +490,7 @@ p {
   font-size: 16px;
   line-height: 1.8;
   font-family: "Cousine";
+  background: gray;
 }
 /* line 2, ../sass/mixins.sass */
 .course--description li:before, .course--description li:after {
@@ -542,7 +557,7 @@ p {
 .course--stats--list h4 {
   font-family: "Cousine";
   font-weight: 100;
-  color: #999;
+  color: gray;
   font-size: 14px;
   padding: 0 0 10px;
   margin-bottom: 10px;
@@ -552,11 +567,13 @@ p {
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
+  background: #890022;
 }
 /* line 300, ../sass/global.sass */
 .course--stats--list h3 {
   font-family: "Work Sans", sans-serif;
   font-size: 18px;
+  background: #890022;
 }
 /* line 303, ../sass/global.sass */
 .course--stats--list > li {
@@ -565,6 +582,7 @@ p {
 /* line 305, ../sass/global.sass */
 .course--stats--list > li ul {
   padding-left: 20px;
+  background: #890022
 }
 /* line 307, ../sass/global.sass */
 .course--stats--list > li li {
@@ -583,6 +601,7 @@ p {
 .signin,
 .signup {
   margin-top: 60px;
+  color: #bbbbbb;
 }
 
 /* line 468, ../sass/global.sass */
@@ -623,13 +642,13 @@ textarea:-ms-input-placeholder {
 }
 /* line 485, ../sass/global.sass */
 textarea:focus {
-  border-color: #7c689b;
+  border-color: gray;
 }
 
 /* line 488, ../sass/global.sass */
 input {
   width: 100%;
-  color: #332a40;
+  color: black;
   border-radius: 8px;
   border: 1px solid #ccc4d8;
   padding: 15px;
@@ -678,7 +697,7 @@ input:focus {
 
 /* line 507, ../sass/global.sass */
 .button {
-  background: #7c689b;
+  background: 	gray;
   color: #fff;
   font-family: "Work Sans", sans-serif;
   font-size: 18px;
@@ -701,14 +720,14 @@ input:focus {
 }
 /* line 522, ../sass/global.sass */
 .button:not(.button-secondary):hover {
-  background: #63537d;
+  background: 	gray;
 }
 
 /* line 525, ../sass/global.sass */
 .button-secondary {
-  color: #7c689b;
-  background: none;
-  box-shadow: 0 0 0 2px #7c689b inset;
+  color: #fff;;
+  background: 	gray;
+  box-shadow: 0 0 0 2px 	#bbbbbb inset;
   -webkit-transition: box-shadow 0.2s, color 0.2s;
   -moz-transition: box-shadow 0.2s, color 0.2s;
   -ms-transition: box-shadow 0.2s, color 0.2s;
@@ -717,8 +736,8 @@ input:focus {
 }
 /* line 530, ../sass/global.sass */
 .button-secondary:hover {
-  color: #63537d;
-  box-shadow: 0 0 0 2px #63537d inset;
+  color: 	#bbbbbb;
+  box-shadow: 0 0 0 2px 	#bbbbbb inset;
 }
 
 /* adds additional padding to the bottom of an element */
@@ -729,6 +748,7 @@ input:focus {
 /* added additional class name for header elements */
 .signout {
   margin-top: 60px;
+  color: #bbbbbb;
 }
 
 /* styles the signed in user's name in the header */
@@ -739,12 +759,14 @@ input:focus {
 
 /* styles the validation errors */
 .validation--errors--label {
-  color: #7c689b;
+  color: white;
   font-size: 28px;
+  background: gray
 }
 .validation-errors ul {
-  color: #7c689b;
+  color: white;
   padding: 15px 0 40px 10px;
+  background: #890022;
 }
 
 /* reduce bottom margin on the course description textarea element */

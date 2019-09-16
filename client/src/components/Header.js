@@ -10,7 +10,7 @@ const Header = (props) => {
   return(
     <div className="header">
       <div className="bounds">
-        <h1 onClick={() => window.location.href = '/'} className="header--logo">Courses</h1>
+        <h1 onClick={() => window.location.href = '/'} className="header--logo">Bayside High School Tigers  - Courses</h1>
         {/* Ternary operator shows "Welcome user" and "sign out" IF authorized user signed in
             Otherwise the "sign up" and "sign in" links will be shown*/
           authUser ?
