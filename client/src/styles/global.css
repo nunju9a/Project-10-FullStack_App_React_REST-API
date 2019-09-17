@@ -304,8 +304,8 @@ p {
 }
 
 p:nth-child(even) {
-  background: #890022;
-  color: white;
+  background: white;
+  color: #890022;
 }
 
 /* line 70, ../sass/global.sass */
@@ -430,6 +430,7 @@ p:nth-child(even) {
 /* line 159, ../sass/global.sass */
 .course--detail {
   margin-top: 60px;
+  background: white;
 }
 /* line 162, ../sass/global.sass */
 .course--header {
@@ -438,22 +439,22 @@ p:nth-child(even) {
 /* line 164, ../sass/global.sass */
 .course--header .course--label {
   font-size: 18px;
-  color: gray;
-  background: #890022;
+  color: rgb(35, 190, 204);
+  background: white;
 }
 /* line 167, ../sass/global.sass */
 .course--header .course--title {
   font-size: 48px;
   margin-bottom: 15px;
-  color: black;
-  background: #890022;
+  color: rgb(35, 190, 204);
+  background: white;
 }
 /* line 171, ../sass/global.sass */
 .course--header p {
   font-size: 18px;
-  color: black;
+  color: rgb(35, 190, 204);
   font-weight: 100;
-  background: gray;
+  background: white;
 }
 /* line 176, ../sass/global.sass */
 .course--title--input {
@@ -473,8 +474,8 @@ p:nth-child(even) {
 .course--description p {
   font-size: 16px;
   line-height: 1.8;
-  color: black;
-  background: gray;
+  color: rgb(35, 190, 204);
+  background: white;
 }
 /* line 195, ../sass/global.sass */
 .course--description ol,
@@ -557,7 +558,7 @@ p:nth-child(even) {
 .course--stats--list h4 {
   font-family: "Cousine";
   font-weight: 100;
-  color: gray;
+  color: baby rgb(35, 190, 204);
   font-size: 14px;
   padding: 0 0 10px;
   margin-bottom: 10px;
@@ -567,13 +568,13 @@ p:nth-child(even) {
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
-  background: #890022;
+  background: white;
 }
 /* line 300, ../sass/global.sass */
 .course--stats--list h3 {
   font-family: "Work Sans", sans-serif;
   font-size: 18px;
-  background: #890022;
+  background: white;
 }
 /* line 303, ../sass/global.sass */
 .course--stats--list > li {
@@ -582,7 +583,7 @@ p:nth-child(even) {
 /* line 305, ../sass/global.sass */
 .course--stats--list > li ul {
   padding-left: 20px;
-  background: #890022
+  background: white;
 }
 /* line 307, ../sass/global.sass */
 .course--stats--list > li li {

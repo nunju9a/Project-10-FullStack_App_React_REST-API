@@ -33,7 +33,6 @@ class UserSignUp extends React.Component {
   submit = (e) => {
     e.preventDefault();
     const { context } = this.props;
-    const { from } = this.props.location.state || {from: { pathname: '/' }};
 
     const {
       firstName,
@@ -84,7 +83,7 @@ class UserSignUp extends React.Component {
           this.setState({ errors: []});
           // Created user is signed in and directed to whichever page they were on
           context.actions.signIn(emailAddress, password)
-            .then( user => this.props.history.push(from))
+            .then( user => this.props.history.push('/'))
             .catch( err => {
               // Otherwise render undhandled error page
               console.log(err);
