@@ -13,7 +13,7 @@ const asyncHandler = cb => {
     } catch(err) {
       if (err.message === "E-mail is already associated with another user") { 
         console.log('Validation error')
-        res.status(400).json({
+        res.status(403).json({
           message: err.message,
           error: {},
         });
@@ -106,7 +106,7 @@ router.post('/users', asyncHandler(async (req, res) => {
     } else {
       // Respond with status 400
       res.status(400).json({
-        message: "Bad Request Error"
+        message: "Missing information - Please check all fields are entered correctly"
       })
     }
   })
